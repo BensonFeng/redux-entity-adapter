@@ -1,29 +1,19 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { nanoid } from "@reduxjs/toolkit";
 import { fetchComments, commentsSelectors } from "./commentsSlice";
+import Comment from "./components/Comment";
 
 const Comments = () => {
   const dispatch = useDispatch();
+  const allComments = useSelector(commentsSelectors.selectAll);
 
   useEffect(() => {
-    dispatch(fetchComments()).unwrap();
-  }, [dispatch]);
-  // const total = useSelector(commentsSelectors.selectTotal);
-  // const allComments = useSelector(commentsSelectors.selectEntities);
+    dispatch(fetchComments());
+  }, []);
 
-  // const userComments = Object.allComments.map((allComment, i) => (
-  //   <h1 key={allComment.postId}>{allComment.name}</h1>
-  // ));
-  const replicaComments = useSelector((state) => state.comments.replica);
-
-  return (
-    <div>
-      {replicaComments.map(function (listValue, index) {
-        return <li key={index}>{listValue.name}</li>;
-      })}
-    </div>
-  );
+  return allComments.map((comment) => (
+    <Comment key={comment.id} comment={comment} />
+  ));
 };
 
 export default Comments;

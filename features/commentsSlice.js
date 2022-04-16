@@ -13,21 +13,16 @@ export const fetchComments = createAsyncThunk(
   }
 );
 
-const initialState = {
-  replica: [],
-};
-
-// const commentsAdapter = createEntityAdapter({
-//   selectId: (comment) => comment.id,
-// });
+const commentsAdapter = createEntityAdapter({
+  selectId: (comment) => comment.id,
+});
 
 const commentsSlice = createSlice({
   name: "comments",
-  // initialState: commentsAdapter.getInitialState({
-  //   loading: false,
-  //   replica: [],
-  // }), vadapter version
-  initialState,
+  initialState: commentsAdapter.getInitialState({
+    loading: false,
+    replica: [],
+  }),
   reducers: {},
   extraReducers: {
     [fetchComments.pending](state) {
@@ -35,7 +30,7 @@ const commentsSlice = createSlice({
     },
     [fetchComments.fulfilled](state, { payload }) {
       state.loading = false;
-      // commentsAdapter.setAll(state, payload);
+      commentsAdapter.setAll(state, payload);
       state.replica = payload;
     },
     [fetchComments.rejected](state) {
@@ -44,8 +39,8 @@ const commentsSlice = createSlice({
   },
 });
 
-// export const commentsSelectors = commentsAdapter.getSelectors(
-//   (state) => state.comments
-// );
+export const commentsSelectors = commentsAdapter.getSelectors(
+  (state) => state.comments
+);
 
 export default commentsSlice.reducer;
