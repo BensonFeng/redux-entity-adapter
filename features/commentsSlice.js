@@ -23,6 +23,17 @@ export const deleteComment = createAsyncThunk(
   }
 );
 
+export const patchComment = createAsyncThunk(
+  "comments/patchComment",
+  async ({ id, newObj }) => {
+    await fetch(`https://jsonplaceholder.typicode.com/comments/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(newObj),
+    });
+    return { id, changes: newObj };
+  }
+);
+
 const commentsAdapter = createEntityAdapter({
   selectId: (comment) => comment.id,
 });
@@ -34,6 +45,7 @@ const commentsSlice = createSlice({
     setAllComments: commentsAdapter.setAll,
     setOneComments: commentsAdapter.removeOne,
     setManyComments: commentsAdapter.addMany,
+    updateOneComment: commentsAdapter.updateOne,
   },
   extraReducers: {
     [fetchComments.pending](state) {
@@ -56,6 +68,16 @@ const commentsSlice = createSlice({
       state.loading = false;
       commentsAdapter.removeOne(state, id);
     },
+    [patchComment.pending](state) {
+      state.loading = true;
+    },
+    [patchComment.fulfilled](state, { payload }) {
+      state.loading = false;
+      commentsAdapter.updateOne(state, {
+        id: payload.id,
+        changes: payload.changes,
+      });
+    },
   },
 });
 
@@ -63,7 +85,11 @@ export const commentsSelectors = commentsAdapter.getSelectors(
   (state) => state.comments
 );
 
-export const { setAllComments, setManyComments, setOneComments } =
-  commentsSlice.actions;
+export const {
+  setAllComments,
+  setManyComments,
+  setOneComments,
+  updateOneComment,
+} = commentsSlice.actions;
 
 export default commentsSlice.reducer;

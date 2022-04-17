@@ -1,18 +1,25 @@
+import React, { memo } from "react";
 import { Panel, Button, ButtonToolbar } from "rsuite";
 
-const Comment = ({ comment, onDelete }) => {
+const Comment = ({ id, body, onDelete, onPatch, onUpdate }) => {
   return (
-    <Panel header={<h1>{comment.id}</h1>} bordered style={{ margin: 20 }}>
-      {comment.body}
+    <Panel header={<h1>{id}</h1>} bordered style={{ margin: 20 }}>
+      {body}
       <ButtonToolbar style={{ marginTop: 10 }}>
-        <Button size="lg" color="red" onClick={() => onDelete(comment.id)}>
+        <Button size="lg" color="red" onClick={() => onDelete(id)}>
           Delete
         </Button>
-        <Button size="lg" color="cyan">
+        <Button
+          size="lg"
+          color="cyan"
+          //   onClick={() => onPatch(id, { body: 'NEW TEXT' })}
+          onClick={() => onUpdate(id, { body: "NEW TEXT" })}
+        >
           Patch
         </Button>
       </ButtonToolbar>
     </Panel>
   );
 };
-export default Comment;
+
+export default memo(Comment);
